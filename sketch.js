@@ -51,7 +51,7 @@ function setup() {
 }
 
 function createControls() {
-  startBtn = createButton('Start Screen (S)');
+  startBtn = createButton('Start Webcam (S)');
   startBtn.position(10, 10);
   startBtn.mousePressed(startScreenFeed);
 
@@ -99,8 +99,8 @@ function detectHandsLoop() {
 
 async function startScreenFeed() {
   try {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: { frameRate: 30 }, audio: false
+    const stream = await navigator.mediaDevices.getUserMedia({
+      video: { width: 640, height: 480, frameRate: 30 }, audio: false
     });
     screenStream = stream;
 
@@ -108,23 +108,13 @@ async function startScreenFeed() {
     await videoElt.play();
     isVideoReady = true;
 
-    // If user stops sharing from browser UI
     const track = screenStream.getVideoTracks()[0];
     track.addEventListener('ended', () => {
       isVideoReady = false;
       videoElt.srcObject = null;
     });
   } catch (e) {
-    console.warn('Screen capture denied/failed:');
-    console.warn('  name:', e.name);
-    console.warn('  message:', e.message);
-    console.warn('  protocol:', window.location.protocol);
-    console.warn('  inIframe:', window.self !== window.top);
-    if (e.name === 'NotAllowedError') {
-      console.warn('  → User denied the prompt, or browser blocked it (iframe / policy).');
-    } else if (e.name === 'NotSupportedError') {
-      console.warn('  → getDisplayMedia not supported in this context.');
-    }
+    console.warn('Webcam access denied/failed:', e.name, e.message);
   }
 }
 
@@ -144,7 +134,7 @@ function draw() {
   if (!isVideoReady || !videoElt.srcObject) {
     fill(200);
     textSize(14);
-    text('Press "Start Screen (S)" to begin screen capture.', width/2, height/2);
+    text('Press "Start Webcam (S)" to begin.', width/2, height/2);
     return;
   }
 
