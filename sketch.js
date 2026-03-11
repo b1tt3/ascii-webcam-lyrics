@@ -1,4 +1,4 @@
-/*  Screen → ASCII with Hand Tracking + Lyrics (p5.js)
+/*  Webcam → ASCII with Hand Tracking + Lyrics (p5.js)
     Requires in index.html:
       - p5.min.js
       - @tensorflow/tfjs-core, tfjs-backend-webgl, tfjs-converter
@@ -7,7 +7,7 @@
 
 let videoElt, handpose, backgroundBuffer, lyricsInput, submitButton;
 let startBtn, stopBtn;
-let screenStream = null;
+let webcamStream = null;
 
 let predictions = [];
 let isVideoReady = false;
@@ -53,11 +53,11 @@ function setup() {
 function createControls() {
   startBtn = createButton('Start Webcam (S)');
   startBtn.position(10, 10);
-  startBtn.mousePressed(startScreenFeed);
+  startBtn.mousePressed(startWebcam);
 
   stopBtn = createButton('Stop');
   stopBtn.position(130, 10);
-  stopBtn.mousePressed(stopScreenFeed);
+  stopBtn.mousePressed(stopWebcam);
 
   // Lyrics editor
   lyricsInput = createElement('textarea');
@@ -97,18 +97,18 @@ function detectHandsLoop() {
   tick();
 }
 
-async function startScreenFeed() {
+async function startWebcam() {
   try {
     const stream = await navigator.mediaDevices.getUserMedia({
       video: { width: 640, height: 480, frameRate: 30 }, audio: false
     });
-    screenStream = stream;
+    webcamStream = stream;
 
-    videoElt.srcObject = screenStream;
+    videoElt.srcObject = webcamStream;
     await videoElt.play();
     isVideoReady = true;
 
-    const track = screenStream.getVideoTracks()[0];
+    const track = webcamStream.getVideoTracks()[0];
     track.addEventListener('ended', () => {
       isVideoReady = false;
       videoElt.srcObject = null;
@@ -118,10 +118,10 @@ async function startScreenFeed() {
   }
 }
 
-function stopScreenFeed() {
-  if (screenStream) {
-    screenStream.getTracks().forEach(t => t.stop());
-    screenStream = null;
+function stopWebcam() {
+  if (webcamStream) {
+    webcamStream.getTracks().forEach(t => t.stop());
+    webcamStream = null;
   }
   isVideoReady = false;
   videoElt.srcObject = null;
@@ -224,7 +224,7 @@ function keyPressed() {
   if (key === 'L' || key === 'l') {
     toggleLyricsInput();
   } else if (key === 'S' || key === 's') {
-    startScreenFeed();
+    startWebcam();
   }
 }
 
