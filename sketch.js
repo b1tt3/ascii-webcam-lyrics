@@ -134,7 +134,7 @@ function drawSplashScreen() {
   // Title
   fill(255);
   textSize(22);
-  text('webcam → ASCII art + hand tracking', cx, 80);
+  text('webcam → ASCII art + hand tracking by @farida.log', cx, 80);
 
   // Divider
   stroke(80);
