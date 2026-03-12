@@ -127,14 +127,80 @@ function stopWebcam() {
   videoElt.srcObject = null;
 }
 
+function drawSplashScreen() {
+  const cx = width / 2;
+  textAlign(CENTER, CENTER);
+
+  // Title
+  fill(255);
+  textSize(22);
+  text('webcam → ASCII art + hand tracking', cx, 80);
+
+  // Divider
+  stroke(80);
+  strokeWeight(1);
+  line(60, 105, width - 60, 105);
+  noStroke();
+
+  // How it works
+  fill(180);
+  textSize(13);
+  textAlign(LEFT, CENTER);
+  text('HOW IT WORKS', 60, 130);
+
+  fill(140);
+  textSize(12);
+  const howLines = [
+    '1. your webcam feed is split into a pixel grid',
+    '2. each cell is mapped to an ASCII char by brightness',
+    '3. only moving areas render — static zones fade to black',
+    '4. MediaPipe Hands (TensorFlow.js) detects your hand keypoints',
+    '5. lyrics float above each fingertip in real time',
+  ];
+  howLines.forEach((line, i) => text(line, 60, 158 + i * 20));
+
+  // Divider
+  stroke(80);
+  line(60, 265, width - 60, 265);
+  noStroke();
+
+  // Controls
+  fill(180);
+  textSize(13);
+  text('CONTROLS', 60, 290);
+
+  fill(140);
+  textSize(12);
+  const ctrlLines = [
+    'S  —  start webcam',
+    'L  —  open lyrics editor (one word / phrase per line)',
+    '       submit to update fingertip lyrics live',
+    'Stop button  —  turn off webcam',
+  ];
+  ctrlLines.forEach((line, i) => text(line, 60, 318 + i * 20));
+
+  // Divider
+  stroke(80);
+  line(60, 400, width - 60, 400);
+  noStroke();
+
+  // CTA
+  fill(255);
+  textSize(16);
+  textAlign(CENTER, CENTER);
+  text('press  S  to start', cx, 430);
+
+  fill(100);
+  textSize(11);
+  text('allow camera access when prompted', cx, 455);
+}
+
 function draw() {
   frameCounter++;
   background(0);
 
   if (!isVideoReady || !videoElt.srcObject) {
-    fill(200);
-    textSize(14);
-    text('Press "Start Webcam (S)" to begin.', width/2, height/2);
+    drawSplashScreen();
     return;
   }
 
